@@ -10,7 +10,7 @@ const connect = function() {
 
   conn.on("connect", () => {
      //setTimeout(() => conn.write("Move: up"), 1000);
-     setInterval(() => conn.write("Move: left"), 3000)
+     //setInterval(() => conn.write("Move: left"), 3000)
      conn.write("Name: AH")
 
     
