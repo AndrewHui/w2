@@ -5,5 +5,5 @@ for (const char of sentence) {
   count += 50
   setTimeout(() => {
     process.stdout.write(char + '\n');    
-  }, count)
+  }, count) 
 }
