@@ -30,6 +30,12 @@ const handleUserInput = function(x, conn) {
   if (key === "d") {
     conn.write("Move: right")
   }
+  if (key === "1") {
+    conn.write("Say: I don't respect you")
+  }
+  if (key === "2") {
+    conn.write("Say: Can't argue with an idiot")
+  }
 }
   );
 }
