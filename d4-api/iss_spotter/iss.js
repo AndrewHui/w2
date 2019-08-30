@@ -8,6 +8,8 @@ const request = require('request');
  *   - An error, if any (nullable)
  *   - The IP address as a string (null if error). Example: "162.245.144.188"
  */
+
+
 const ipURL = "https://api.ipify.org?format=json";
 
 const fetchMyIP = function(callback) {
@@ -16,14 +18,12 @@ const fetchMyIP = function(callback) {
     if (error) {
       return callback(error);
     }
-
+    const data = JSON.parse(body);
     if (response.statusCode !== 200) {
       const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
       callback(Error(msg), null);
       return;
     }
-
-    const data = JSON.parse(body);
 
     return callback(error, data.ip);
 
@@ -31,5 +31,73 @@ const fetchMyIP = function(callback) {
   });
 };
 
-module.exports = { fetchMyIP };
+
+
+
+const fetchCoordsByIP = function(IP, callback) {
+  const coordinatesURL = `https://ipvigilante.com/${IP}`;
+
+  request(coordinatesURL, (error, response, body) => {
+    if (error) {
+      return callback(error);
+    }
+    const data = JSON.parse(body);
+  
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching coordinates. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+      
+    }
+
+    let coordinates = {
+      latitude: data.data.latitude,
+      longitude: data.data.longitude
+    };
+
+    return callback(error, coordinates);
+
+  });
+
+};
+
+/**
+ * Makes a single API request to retrieve upcoming ISS fly over times the for the given lat/lng coordinates.
+ * Input:
+ *   - An object with keys `latitude` and `longitude`
+ *   - A callback (to pass back an error or the array of resulting data)
+ * Returns (via Callback):
+ *   - An error, if any (nullable)
+ *   - The fly over times as an array of objects (null if error). Example:
+ *     [ { risetime: 134564234, duration: 600 }, ... ]
+ */
+const fetchISSFlyOverTimes = function(coords, callback) {
+  const la = coords.latitude;
+  const lo = coords.longitude;
+  const flyOverURL = `http://api.open-notify.org/iss-pass.json?lat=${la}&lon=${lo}`;
+
+  request(flyOverURL, (error, response, body) => {
+    if (error) {
+      return callback(error);
+    }
+
+    const data = JSON.parse(body);
+
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching coordinates. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+
+
+    return callback(error, data);
+
+  });
+
+};
+
+
+
+
+module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes };
 
